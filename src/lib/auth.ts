@@ -22,11 +22,22 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 6,
   },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
+  },
   user: {
     additionalFields: {
       role: {
         type: "string",
         required: false,
+      },
+      roleChosen: {
+        type: "boolean",
+        required: false,
+        input: false,
       },
       isBlocked: {
         type: "boolean",
@@ -52,6 +63,17 @@ export const auth = betterAuth({
     },
   },
   databaseHooks: {
+    user: {
+      create: {
+        before: async (user, context) => {
+          if (context?.path === "/sign-up/email") {
+            return { data: { ...user, roleChosen: true } };
+          }
+
+          return { data: { ...user, role: "customer", roleChosen: false } };
+        },
+      },
+    },
     session: {
       create: {
         before: async (session, context) => {
@@ -61,6 +83,7 @@ export const auth = betterAuth({
 
           if (user?.isBlocked) {
             throw APIError.fromStatus("FORBIDDEN", {
+              code: "ACCOUNT_BLOCKED",
               message: "Your account is blocked. Please contact support.",
             });
           }

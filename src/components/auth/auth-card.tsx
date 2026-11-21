@@ -1,3 +1,6 @@
+import { GoogleButton } from "@/components/auth/google-button";
+import { FieldSeparator } from "@/components/ui/field";
+
 type AuthCardProps = {
   eyebrow: string;
   title: string;
@@ -21,7 +24,13 @@ export function AuthCard({
           <h1 className="text-3xl font-semibold sm:text-4xl">{title}</h1>
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
-        {children}
+        <div className="flex flex-col gap-6">
+          <GoogleButton />
+          <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+            or use your email
+          </FieldSeparator>
+          {children}
+        </div>
       </div>
     </section>
   );

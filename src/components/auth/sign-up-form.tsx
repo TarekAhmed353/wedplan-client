@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  CameraIcon,
   CircleCheckIcon,
   CircleIcon,
   EyeIcon,
@@ -11,8 +12,10 @@ import {
   HeartIcon,
   Loader2Icon,
   StoreIcon,
+  UserIcon,
 } from "lucide-react";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -28,7 +31,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { authClient } from "@/lib/auth-client";
+import { allowedImageTypes, getImageError } from "@/lib/image-rules";
 import { getPasswordError, passwordRules } from "@/lib/password-rules";
+import { uploadImage } from "@/lib/upload-image";
 import { cn } from "@/lib/utils";
 
 export type SignUpRole = "customer" | "vendor";
@@ -41,7 +46,7 @@ type FormValues = {
   businessName: string;
 };
 
-type FormErrors = Partial<Record<keyof FormValues, string>>;
+type FormErrors = Partial<Record<keyof FormValues | "photo", string>>;
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -87,7 +92,10 @@ const inputClass = "h-11 rounded-xl px-3.5";
 
 export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const [status, setStatus] = useState<"idle" | "creating" | "uploading">(
+    "idle",
+  );
   const [values, setValues] = useState<FormValues>({
     name: "",
     email: "",
@@ -95,8 +103,18 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
     role: defaultRole,
     businessName: "",
   });
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
   const [showPassword, setShowPassword] = useState(false);
+
+  const isSubmitting = status !== "idle";
+
+  useEffect(() => {
+    return () => {
+      if (photoPreview) URL.revokeObjectURL(photoPreview);
+    };
+  }, [photoPreview]);
 
   function updateField<K extends keyof FormValues>(
     key: K,
@@ -104,6 +122,35 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
   ) {
     setValues((current) => ({ ...current, [key]: value }));
     setErrors((current) => ({ ...current, [key]: undefined }));
+  }
+
+  function handlePhotoChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) return;
+
+    const imageError = getImageError(file);
+
+    if (imageError) {
+      setErrors((current) => ({ ...current, photo: imageError }));
+      return;
+    }
+
+    setPhoto(file);
+    setPhotoPreview(URL.createObjectURL(file));
+    setErrors((current) => ({ ...current, photo: undefined }));
+  }
+
+  function removePhoto() {
+    setPhoto(null);
+    setPhotoPreview(null);
+    setErrors((current) => ({ ...current, photo: undefined }));
+  }
+
+  function finishSignUp() {
+    router.push("/");
+    router.refresh();
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -119,7 +166,7 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
 
     const businessName = values.businessName.trim();
 
-    setIsSubmitting(true);
+    setStatus("creating");
 
     const { error } = await authClient.signUp.email({
       name: values.name.trim(),
@@ -130,14 +177,32 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
     });
 
     if (error) {
-      setIsSubmitting(false);
+      setStatus("idle");
       toast.error(error.message || "Could not create your account. Please try again.");
       return;
     }
 
+    if (photo) {
+      setStatus("uploading");
+
+      try {
+        const image = await uploadImage(photo);
+        const { error: updateError } = await authClient.updateUser({ image });
+
+        if (updateError) {
+          throw new Error(updateError.message);
+        }
+      } catch {
+        toast.warning(
+          "Account created, but the photo did not upload. You can add it later in Profile settings.",
+        );
+        finishSignUp();
+        return;
+      }
+    }
+
     toast.success("Account created. Welcome to WedPlan.");
-    router.push("/");
-    router.refresh();
+    finishSignUp();
   }
 
   return (
@@ -218,6 +283,60 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
           <FieldError>{errors.password}</FieldError>
         </Field>
 
+        <Field data-invalid={!!errors.photo}>
+          <FieldLabel htmlFor="photo">
+            Profile photo
+            <span className="font-normal text-muted-foreground">
+              (optional)
+            </span>
+          </FieldLabel>
+          <div className="flex items-center gap-4">
+            <Avatar className="size-16">
+              {photoPreview && (
+                <AvatarImage src={photoPreview} alt="Profile photo preview" />
+              )}
+              <AvatarFallback className="bg-accent text-primary">
+                <UserIcon className="size-6" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-9 rounded-full px-4"
+                  onClick={() => photoInputRef.current?.click()}
+                >
+                  <CameraIcon />
+                  {photo ? "Change photo" : "Choose photo"}
+                </Button>
+                {photo && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="h-9 rounded-full px-4 text-muted-foreground"
+                    onClick={removePhoto}
+                  >
+                    Remove
+                  </Button>
+                )}
+              </div>
+              <FieldDescription className="text-xs">
+                JPG, PNG or WebP. Max 2 MB.
+              </FieldDescription>
+            </div>
+          </div>
+          <input
+            ref={photoInputRef}
+            id="photo"
+            type="file"
+            accept={allowedImageTypes.join(",")}
+            className="sr-only"
+            onChange={handlePhotoChange}
+          />
+          <FieldError>{errors.photo}</FieldError>
+        </Field>
+
         <FieldSet data-invalid={!!errors.role}>
           <FieldLegend variant="label">I want to join as</FieldLegend>
           <RadioGroup
@@ -278,7 +397,9 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
           disabled={isSubmitting}
         >
           {isSubmitting && <Loader2Icon className="animate-spin" />}
-          {isSubmitting ? "Creating account..." : "Create account"}
+          {status === "creating" && "Creating account..."}
+          {status === "uploading" && "Uploading photo..."}
+          {status === "idle" && "Create account"}
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">

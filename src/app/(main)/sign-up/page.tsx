@@ -25,6 +25,7 @@ export default async function SignUpPage({
       eyebrow="Join WedPlan"
       title="Create your account"
       description="Book trusted wedding vendors, or list your own services."
+      withGoogle
     >
       <SignUpForm defaultRole={defaultRole} />
     </AuthCard>

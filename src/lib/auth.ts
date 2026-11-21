@@ -2,17 +2,8 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
-import { MongoClient } from "mongodb";
+import { client, db } from "@/lib/db";
 import { getPasswordError } from "@/lib/password-rules";
-
-const uri = process.env.MONGODB_URI;
-
-if (!uri) {
-  throw new Error("MONGODB_URI is not set. Add it to the .env.local file.");
-}
-
-const client = new MongoClient(uri);
-const db = client.db(process.env.DB_NAME || "wedplan");
 
 const signUpRoles = ["customer", "vendor"];
 

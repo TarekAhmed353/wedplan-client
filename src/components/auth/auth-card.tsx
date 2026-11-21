@@ -5,6 +5,7 @@ type AuthCardProps = {
   eyebrow: string;
   title: string;
   description: string;
+  withGoogle?: boolean;
   children: React.ReactNode;
 };
 
@@ -12,6 +13,7 @@ export function AuthCard({
   eyebrow,
   title,
   description,
+  withGoogle = false,
   children,
 }: AuthCardProps) {
   return (
@@ -25,10 +27,14 @@ export function AuthCard({
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
         <div className="flex flex-col gap-6">
-          <GoogleButton />
-          <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-            or use your email
-          </FieldSeparator>
+          {withGoogle && (
+            <>
+              <GoogleButton />
+              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
+                or use your email
+              </FieldSeparator>
+            </>
+          )}
           {children}
         </div>
       </div>

@@ -7,36 +7,28 @@ import {
   CameraIcon,
   CircleCheckIcon,
   CircleIcon,
-  HeartIcon,
   Loader2Icon,
-  StoreIcon,
   UserIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PasswordInput } from "@/components/auth/password-input";
+import { RolePicker, type SignUpRole } from "@/components/auth/role-picker";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Field,
-  FieldContent,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
-  FieldSet,
-  FieldTitle,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { authClient } from "@/lib/auth-client";
 import { allowedImageTypes, getImageError } from "@/lib/image-rules";
 import { getPasswordError, passwordRules } from "@/lib/password-rules";
 import { uploadImage } from "@/lib/upload-image";
 import { cn } from "@/lib/utils";
 import { isValidEmail } from "@/lib/validators";
-
-export type SignUpRole = "customer" | "vendor";
 
 type FormValues = {
   name: string;
@@ -47,21 +39,6 @@ type FormValues = {
 };
 
 type FormErrors = Partial<Record<keyof FormValues | "photo", string>>;
-
-const roleOptions = [
-  {
-    value: "customer",
-    title: "Customer",
-    description: "I am planning a wedding.",
-    icon: HeartIcon,
-  },
-  {
-    value: "vendor",
-    title: "Vendor",
-    description: "I offer wedding services.",
-    icon: StoreIcon,
-  },
-] as const;
 
 function validate(values: FormValues) {
   const errors: FormErrors = {};
@@ -321,38 +298,11 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
           <FieldError>{errors.photo}</FieldError>
         </Field>
 
-        <FieldSet data-invalid={!!errors.role}>
-          <FieldLegend variant="label">I want to join as</FieldLegend>
-          <RadioGroup
-            value={values.role}
-            onValueChange={(value) => updateField("role", value as SignUpRole)}
-            className="grid gap-3 sm:grid-cols-2"
-            aria-invalid={!!errors.role}
-          >
-            {roleOptions.map((option) => (
-              <FieldLabel
-                key={option.value}
-                htmlFor={`role-${option.value}`}
-                className="rounded-xl!"
-              >
-                <Field orientation="horizontal" className="p-3.5!">
-                  <FieldContent>
-                    <FieldTitle>
-                      <option.icon className="size-4 text-primary" />
-                      {option.title}
-                    </FieldTitle>
-                    <FieldDescription>{option.description}</FieldDescription>
-                  </FieldContent>
-                  <RadioGroupItem
-                    value={option.value}
-                    id={`role-${option.value}`}
-                  />
-                </Field>
-              </FieldLabel>
-            ))}
-          </RadioGroup>
-          <FieldError>{errors.role}</FieldError>
-        </FieldSet>
+        <RolePicker
+          value={values.role}
+          onChange={(role) => updateField("role", role)}
+          error={errors.role}
+        />
 
         {values.role === "vendor" && (
           <Field>

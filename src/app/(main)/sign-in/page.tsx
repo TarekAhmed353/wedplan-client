@@ -35,6 +35,7 @@ export default async function SignInPage({
       eyebrow="Welcome back"
       title="Sign in to WedPlan"
       description="Pick up your wedding plans where you left off."
+      withGoogle
     >
       <AuthErrorToast message={getErrorMessage(error)} />
       <SignInForm />

@@ -1,6 +1,6 @@
 export default function Home() {
   return (
-    <main className="flex-1 flex items-center justify-center p-8">
+    <div className="flex-1 flex items-center justify-center p-8">
       <div className="max-w-xl w-full rounded-2xl border bg-card p-8 space-y-5">
         <p className="text-xs tracking-[0.25em] uppercase text-gold">
           Theme check
@@ -27,6 +27,6 @@ export default function Home() {
           </span>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

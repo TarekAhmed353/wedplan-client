@@ -7,14 +7,13 @@ import {
   CameraIcon,
   CircleCheckIcon,
   CircleIcon,
-  EyeIcon,
-  EyeOffIcon,
   HeartIcon,
   Loader2Icon,
   StoreIcon,
   UserIcon,
 } from "lucide-react";
 import { toast } from "sonner";
+import { PasswordInput } from "@/components/auth/password-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +34,7 @@ import { allowedImageTypes, getImageError } from "@/lib/image-rules";
 import { getPasswordError, passwordRules } from "@/lib/password-rules";
 import { uploadImage } from "@/lib/upload-image";
 import { cn } from "@/lib/utils";
+import { isValidEmail } from "@/lib/validators";
 
 export type SignUpRole = "customer" | "vendor";
 
@@ -47,8 +47,6 @@ type FormValues = {
 };
 
 type FormErrors = Partial<Record<keyof FormValues | "photo", string>>;
-
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const roleOptions = [
   {
@@ -72,7 +70,7 @@ function validate(values: FormValues) {
     errors.name = "Please enter your full name.";
   }
 
-  if (!emailPattern.test(values.email.trim())) {
+  if (!isValidEmail(values.email)) {
     errors.email = "Please enter a valid email address.";
   }
 
@@ -106,7 +104,6 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [showPassword, setShowPassword] = useState(false);
 
   const isSubmitting = status !== "idle";
 
@@ -239,29 +236,16 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
 
         <Field data-invalid={!!errors.password}>
           <FieldLabel htmlFor="password">Password</FieldLabel>
-          <div className="relative">
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              autoComplete="new-password"
-              placeholder="Create a password"
-              className={cn(inputClass, "pr-11")}
-              value={values.password}
-              onChange={(event) => updateField("password", event.target.value)}
-              aria-invalid={!!errors.password}
-              aria-describedby="password-rules"
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="absolute top-1/2 right-1.5 size-8 -translate-y-1/2 rounded-full text-muted-foreground"
-              onClick={() => setShowPassword((current) => !current)}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-            </Button>
-          </div>
+          <PasswordInput
+            id="password"
+            autoComplete="new-password"
+            placeholder="Create a password"
+            className={inputClass}
+            value={values.password}
+            onChange={(event) => updateField("password", event.target.value)}
+            aria-invalid={!!errors.password}
+            aria-describedby="password-rules"
+          />
           <ul id="password-rules" className="grid gap-1.5 sm:grid-cols-3">
             {passwordRules.map((rule) => {
               const passed = rule.test(values.password);

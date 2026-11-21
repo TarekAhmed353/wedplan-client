@@ -51,6 +51,23 @@ export const auth = betterAuth({
       },
     },
   },
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (session, context) => {
+          const user = (await context?.context.internalAdapter.findUserById(
+            session.userId,
+          )) as { isBlocked?: boolean } | null | undefined;
+
+          if (user?.isBlocked) {
+            throw APIError.fromStatus("FORBIDDEN", {
+              message: "Your account is blocked. Please contact support.",
+            });
+          }
+        },
+      },
+    },
+  },
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
       if (ctx.path === "/sign-up/email") {

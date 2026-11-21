@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
+import { jwt } from "better-auth/plugins";
 import { client, db } from "@/lib/db";
 import { getPasswordError } from "@/lib/password-rules";
 
@@ -119,5 +120,12 @@ export const auth = betterAuth({
       }
     }),
   },
-  plugins: [nextCookies()],
+  plugins: [
+    jwt({
+      jwt: {
+        definePayload: ({ user }) => ({ id: user.id, email: user.email }),
+      },
+    }),
+    nextCookies(),
+  ],
 });

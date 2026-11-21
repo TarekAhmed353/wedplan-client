@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GemIcon } from "lucide-react";
+import { HeartIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type LogoProps = {
@@ -16,7 +16,7 @@ export function Logo({ className, onClick }: LogoProps) {
       className={cn("flex shrink-0 items-center gap-2", className)}
     >
       <span className="flex size-9 items-center justify-center rounded-full bg-primary text-gold">
-        <GemIcon className="size-4.5" />
+        <HeartIcon className="size-4.5 fill-current" />
       </span>
       <span className="font-heading text-2xl font-semibold tracking-tight text-foreground">
         Wed<span className="text-primary">Plan</span>

@@ -12,7 +12,7 @@ const exploreLinks = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Browse services" },
   { href: "/sign-in", label: "Sign in" },
-  { href: "/sign-up", label: "Become a vendor" },
+  { href: "/sign-up?role=vendor", label: "Become a vendor" },
 ];
 
 const categories = [

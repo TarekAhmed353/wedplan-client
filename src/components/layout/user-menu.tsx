@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { LayoutDashboardIcon, LogOutIcon, UserCogIcon } from "lucide-react";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { authClient } from "@/lib/auth-client";
 
 export type NavUser = {
   name: string;
@@ -41,6 +44,21 @@ function UserAvatar({ user, className }: { user: NavUser; className?: string }) 
 }
 
 export function UserMenu({ user }: { user: NavUser }) {
+  const router = useRouter();
+
+  async function handleSignOut() {
+    const { error } = await authClient.signOut();
+
+    if (error) {
+      toast.error("Could not log you out. Please try again.");
+      return;
+    }
+
+    toast.success("You have logged out.");
+    router.push("/");
+    router.refresh();
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -81,7 +99,11 @@ export function UserMenu({ user }: { user: NavUser }) {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" className="px-2 py-2">
+        <DropdownMenuItem
+          variant="destructive"
+          className="px-2 py-2"
+          onSelect={handleSignOut}
+        >
           <LogOutIcon />
           Log out
         </DropdownMenuItem>

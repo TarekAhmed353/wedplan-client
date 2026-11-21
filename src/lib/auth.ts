@@ -3,6 +3,7 @@ import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { MongoClient } from "mongodb";
+import { getPasswordError } from "@/lib/password-rules";
 
 const uri = process.env.MONGODB_URI;
 
@@ -53,9 +54,29 @@ export const auth = betterAuth({
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
       if (ctx.path === "/sign-up/email") {
-        if (!signUpRoles.includes(ctx.body?.role)) {
+        const { role, password, businessName } = ctx.body ?? {};
+
+        if (!signUpRoles.includes(role)) {
           throw APIError.fromStatus("BAD_REQUEST", {
             message: "Please choose customer or vendor as your role.",
+          });
+        }
+
+        const passwordError =
+          typeof password === "string"
+            ? getPasswordError(password)
+            : "Password is required.";
+
+        if (passwordError) {
+          throw APIError.fromStatus("BAD_REQUEST", { message: passwordError });
+        }
+
+        if (
+          businessName !== undefined &&
+          (typeof businessName !== "string" || businessName.length > 80)
+        ) {
+          throw APIError.fromStatus("BAD_REQUEST", {
+            message: "Business name must be text of 80 characters or less.",
           });
         }
       }

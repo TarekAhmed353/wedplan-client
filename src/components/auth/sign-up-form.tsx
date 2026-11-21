@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   CircleCheckIcon,
@@ -8,6 +9,7 @@ import {
   EyeIcon,
   EyeOffIcon,
   HeartIcon,
+  Loader2Icon,
   StoreIcon,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -25,6 +27,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { authClient } from "@/lib/auth-client";
 import { getPasswordError, passwordRules } from "@/lib/password-rules";
 import { cn } from "@/lib/utils";
 
@@ -83,6 +86,8 @@ function validate(values: FormValues) {
 const inputClass = "h-11 rounded-xl px-3.5";
 
 export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [values, setValues] = useState<FormValues>({
     name: "",
     email: "",
@@ -101,7 +106,7 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
     setErrors((current) => ({ ...current, [key]: undefined }));
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const nextErrors = validate(values);
@@ -112,7 +117,27 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
       return;
     }
 
-    toast.success("Form looks good. Account creation comes in the next step.");
+    const businessName = values.businessName.trim();
+
+    setIsSubmitting(true);
+
+    const { error } = await authClient.signUp.email({
+      name: values.name.trim(),
+      email: values.email.trim(),
+      password: values.password,
+      role: values.role,
+      ...(values.role === "vendor" && businessName ? { businessName } : {}),
+    });
+
+    if (error) {
+      setIsSubmitting(false);
+      toast.error(error.message || "Could not create your account. Please try again.");
+      return;
+    }
+
+    toast.success("Account created. Welcome to WedPlan.");
+    router.push("/");
+    router.refresh();
   }
 
   return (
@@ -247,8 +272,13 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
           </Field>
         )}
 
-        <Button type="submit" className="h-11 w-full rounded-full text-base">
-          Create account
+        <Button
+          type="submit"
+          className="h-11 w-full rounded-full text-base"
+          disabled={isSubmitting}
+        >
+          {isSubmitting && <Loader2Icon className="animate-spin" />}
+          {isSubmitting ? "Creating account..." : "Create account"}
         </Button>
 
         <p className="text-center text-sm text-muted-foreground">

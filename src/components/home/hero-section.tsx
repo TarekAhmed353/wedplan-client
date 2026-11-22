@@ -1,10 +1,14 @@
 import Link from "next/link";
-import { ArrowRightIcon, CheckIcon } from "lucide-react";
+import { ArrowRightIcon, BadgeCheckIcon, BanknoteIcon, SearchIcon } from "lucide-react";
 import { HeroIllustration } from "@/components/home/hero-illustration";
 import { Reveal } from "@/components/home/reveal";
 import { Button } from "@/components/ui/button";
 
-const highlights = ["Every vendor reviewed by our team", "Prices shown in taka", "Free to browse"];
+const highlights = [
+  { label: "Every vendor reviewed by our team", icon: BadgeCheckIcon },
+  { label: "Prices shown in taka", icon: BanknoteIcon },
+  { label: "Free to browse", icon: SearchIcon },
+];
 
 export function HeroSection() {
   return (
@@ -41,11 +45,16 @@ export function HeroSection() {
               <Link href="/sign-up?role=vendor">Become a vendor</Link>
             </Button>
           </div>
-          <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+          <ul className="flex flex-wrap gap-2.5">
             {highlights.map((item) => (
-              <li key={item} className="flex items-center gap-1.5">
-                <CheckIcon className="size-4 text-gold" />
-                {item}
+              <li
+                key={item.label}
+                className="flex items-center gap-2 rounded-full bg-card/85 py-1.5 pr-4 pl-1.5 text-sm font-medium text-foreground shadow-sm ring-1 ring-gold/40 backdrop-blur-sm"
+              >
+                <span className="flex size-7 items-center justify-center rounded-full bg-gold text-gold-foreground">
+                  <item.icon className="size-4" />
+                </span>
+                {item.label}
               </li>
             ))}
           </ul>

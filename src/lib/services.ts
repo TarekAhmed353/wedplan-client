@@ -90,6 +90,7 @@ export type PlanSummary = {
   limit: number | null;
   canAddService: boolean;
   subscriptionExpiresAt: string | null;
+  cancelAtPeriodEnd?: boolean;
 };
 
 export type ServiceInput = {

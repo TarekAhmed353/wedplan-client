@@ -30,7 +30,7 @@ export function VendorServiceCard({ service }: { service: Service }) {
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
           className="object-cover"
         />
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 rounded-full bg-card shadow-sm">
           <ServiceStatusBadge status={service.status} />
         </div>
       </div>

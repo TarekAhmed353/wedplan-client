@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function DashboardLoading() {
+export function DashboardSkeleton() {
   return (
     <div aria-busy="true" aria-label="Loading">
       <div className="mb-8 space-y-3">

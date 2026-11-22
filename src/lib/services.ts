@@ -51,6 +51,35 @@ export type AdminServiceList = {
   counts: Record<"all" | ServiceStatus, number>;
 };
 
+export type PublicVendor = {
+  _id: string;
+  name: string;
+  businessName: string | null;
+  image: string | null;
+  isPremium: boolean;
+};
+
+export type PublicService = Omit<Service, "description" | "vendorId"> & {
+  vendor: PublicVendor;
+};
+
+export const SERVICE_SORTS = [
+  { value: "newest", label: "Newest first" },
+  { value: "price-asc", label: "Price: low to high" },
+  { value: "price-desc", label: "Price: high to low" },
+] as const;
+
+export type ServiceSort = (typeof SERVICE_SORTS)[number]["value"];
+
+export type PublicServiceList = {
+  services: PublicService[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  sort: ServiceSort;
+};
+
 export type PlanSummary = {
   plan: "free" | "premium";
   activeServices: number;

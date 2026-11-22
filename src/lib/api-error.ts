@@ -27,11 +27,14 @@ export type ApiOptions = Omit<RequestInit, "body"> & {
 
 export async function sendApiRequest<T>(
   path: string,
-  token: string,
+  token: string | null,
   { json, headers, ...init }: ApiOptions = {},
 ): Promise<T> {
   const requestHeaders = new Headers(headers);
-  requestHeaders.set("Authorization", `Bearer ${token}`);
+
+  if (token) {
+    requestHeaders.set("Authorization", `Bearer ${token}`);
+  }
 
   if (json !== undefined) {
     requestHeaders.set("Content-Type", "application/json");

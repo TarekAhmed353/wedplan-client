@@ -8,6 +8,19 @@ import { getPasswordError } from "@/lib/password-rules";
 
 const signUpRoles = ["customer", "vendor"];
 
+const allowedImageHosts = ["i.ibb.co", "lh3.googleusercontent.com"];
+
+function isAllowedImageUrl(value: unknown) {
+  if (typeof value !== "string") return false;
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && allowedImageHosts.includes(url.hostname);
+  } catch {
+    return false;
+  }
+}
+
 export const auth = betterAuth({
   database: mongodbAdapter(db, { client }),
   emailAndPassword: {
@@ -113,10 +126,39 @@ export const auth = betterAuth({
         }
       }
 
-      if (ctx.path === "/update-user" && ctx.body && "role" in ctx.body) {
-        throw APIError.fromStatus("FORBIDDEN", {
-          message: "You cannot change your role.",
-        });
+      if (ctx.path === "/update-user" && ctx.body) {
+        const { name, image, businessName } = ctx.body;
+
+        if ("role" in ctx.body) {
+          throw APIError.fromStatus("FORBIDDEN", {
+            message: "You cannot change your role.",
+          });
+        }
+
+        if (
+          name !== undefined &&
+          (typeof name !== "string" || name.trim().length < 2 || name.trim().length > 80)
+        ) {
+          throw APIError.fromStatus("BAD_REQUEST", {
+            message: "Name must be 2 to 80 characters.",
+          });
+        }
+
+        if (
+          businessName !== undefined &&
+          businessName !== null &&
+          (typeof businessName !== "string" || businessName.length > 80)
+        ) {
+          throw APIError.fromStatus("BAD_REQUEST", {
+            message: "Business name must be text of 80 characters or less.",
+          });
+        }
+
+        if (image !== undefined && image !== null && !isAllowedImageUrl(image)) {
+          throw APIError.fromStatus("BAD_REQUEST", {
+            message: "Profile photo must be uploaded through WedPlan.",
+          });
+        }
       }
     }),
   },

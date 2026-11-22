@@ -9,7 +9,7 @@ const statusStyles: Record<
 > = {
   pending: {
     label: "Pending review",
-    className: "bg-gold/15 text-gold-foreground",
+    className: "bg-gold/15 text-gold-foreground dark:text-gold",
     icon: ClockIcon,
   },
   approved: {

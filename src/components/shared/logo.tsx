@@ -15,7 +15,7 @@ export function Logo({ className, onClick }: LogoProps) {
       aria-label="WedPlan home"
       className={cn("flex shrink-0 items-center gap-2", className)}
     >
-      <span className="flex size-9 items-center justify-center rounded-full bg-primary text-gold">
+      <span className="flex size-9 items-center justify-center rounded-full bg-primary text-gold dark:bg-accent">
         <HeartIcon className="size-4.5 fill-current" />
       </span>
       <span className="font-heading text-2xl font-semibold tracking-tight text-foreground">

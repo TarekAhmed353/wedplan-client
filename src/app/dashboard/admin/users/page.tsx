@@ -122,7 +122,7 @@ export default async function ManageUsersPage({
                             {user.role ?? "no role"}
                           </Badge>
                           {user.isPremium && (
-                            <Badge className="gap-1 rounded-full border-0 bg-gold/15 px-2.5 text-gold-foreground">
+                            <Badge className="gap-1 rounded-full border-0 bg-gold/15 px-2.5 text-gold-foreground dark:text-gold">
                               <CrownIcon className="size-3 text-gold" />
                               Premium
                             </Badge>

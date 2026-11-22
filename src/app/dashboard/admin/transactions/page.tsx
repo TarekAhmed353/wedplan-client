@@ -19,7 +19,7 @@ const statuses: TransactionStatus[] = ["paid", "pending", "expired", "failed"];
 
 const statusStyles: Record<TransactionStatus, string> = {
   paid: "bg-primary/10 text-primary",
-  pending: "bg-gold/15 text-gold-foreground",
+  pending: "bg-gold/15 text-gold-foreground dark:text-gold",
   expired: "bg-muted text-muted-foreground",
   failed: "bg-destructive/10 text-destructive",
 };

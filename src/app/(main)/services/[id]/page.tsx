@@ -181,7 +181,7 @@ export default async function ServiceDetailsPage({
               <p className="flex flex-wrap items-center gap-2 font-heading text-xl font-semibold">
                 {vendorName}
                 {service.vendor.isPremium && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-gold/15 px-2 py-0.5 font-sans text-xs font-medium text-gold-foreground">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-gold/15 px-2 py-0.5 font-sans text-xs font-medium text-gold-foreground dark:text-gold">
                     <CrownIcon className="size-3 text-gold" />
                     Premium vendor
                   </span>

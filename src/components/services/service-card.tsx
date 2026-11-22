@@ -44,7 +44,7 @@ export function ServiceCard({ service }: { service: PublicService }) {
           </Avatar>
           <span className="min-w-0 truncate text-sm">{vendorName}</span>
           {service.vendor.isPremium && (
-            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-gold/15 px-2 py-0.5 text-[0.7rem] font-medium text-gold-foreground">
+            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-gold/15 px-2 py-0.5 text-[0.7rem] font-medium text-gold-foreground dark:text-gold">
               <CrownIcon className="size-3 text-gold" />
               Premium
             </span>

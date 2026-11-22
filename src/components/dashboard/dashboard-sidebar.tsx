@@ -38,7 +38,7 @@ export function DashboardSidebar({ role }: { role: DashboardRole }) {
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="lg" tooltip="WedPlan home">
               <Link href="/" onClick={closeMobile}>
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-gold">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-gold dark:bg-accent">
                   <HeartIcon className="size-4 fill-current" />
                 </span>
                 <span className="flex flex-col leading-tight">

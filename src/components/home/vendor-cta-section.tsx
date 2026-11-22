@@ -7,7 +7,7 @@ export function VendorCtaSection() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
       <Reveal>
-        <div className="relative overflow-hidden rounded-3xl bg-primary px-6 py-14 text-primary-foreground sm:px-12">
+        <div className="relative overflow-hidden rounded-3xl bg-primary px-6 py-14 text-primary-foreground ring-1 ring-transparent sm:px-12 dark:bg-accent dark:text-foreground dark:ring-gold/20">
           <div className="pointer-events-none absolute -top-20 -right-20 size-72 rounded-full bg-gold/20 blur-3xl" />
           <div className="relative grid items-center gap-8 lg:grid-cols-[1fr_auto]">
             <div className="space-y-3">
@@ -15,10 +15,10 @@ export function VendorCtaSection() {
                 <HeartHandshakeIcon className="size-4" />
                 For wedding vendors
               </p>
-              <h2 className="text-3xl font-semibold text-primary-foreground sm:text-4xl">
+              <h2 className="text-3xl font-semibold text-primary-foreground sm:text-4xl dark:text-foreground">
                 Grow your wedding business with WedPlan
               </h2>
-              <p className="max-w-2xl text-primary-foreground/80">
+              <p className="max-w-2xl text-primary-foreground/80 dark:text-foreground/80">
                 List up to 3 services for free and reply to booking requests from
                 your dashboard. Go Premium for unlimited services and a Premium
                 badge on every listing.

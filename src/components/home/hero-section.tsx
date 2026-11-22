@@ -60,7 +60,7 @@ export function HeroSection() {
           </ul>
         </Reveal>
 
-        <Reveal delay={0.15} className="mx-auto w-full max-w-sm sm:max-w-md lg:max-w-[26rem]">
+        <Reveal delay={0.15} className="mx-auto w-full max-w-sm sm:max-w-md lg:max-w-104">
           <HeroSlideshow />
         </Reveal>
       </div>

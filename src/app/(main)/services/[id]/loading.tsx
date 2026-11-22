@@ -22,7 +22,7 @@ export default function ServiceDetailsLoading() {
             <Skeleton className="h-4 w-2/3" />
           </div>
         </div>
-        <Skeleton className="h-[30rem] rounded-3xl" />
+        <Skeleton className="h-120 rounded-3xl" />
       </div>
     </section>
   );

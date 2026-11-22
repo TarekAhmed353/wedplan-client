@@ -34,12 +34,12 @@ export function HeroBackground() {
       />
 
       <motion.div
-        className="absolute -top-40 -left-32 size-[30rem] rounded-full bg-primary/15 blur-3xl dark:bg-primary/20"
+        className="absolute -top-40 -left-32 size-120 rounded-full bg-primary/15 blur-3xl dark:bg-primary/20"
         animate={reduceMotion ? undefined : { x: [0, 40, 0], y: [0, 30, 0] }}
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute -right-24 -bottom-48 size-[34rem] rounded-full bg-gold/20 blur-3xl dark:bg-gold/15"
+        className="absolute -right-24 -bottom-48 size-136 rounded-full bg-gold/20 blur-3xl dark:bg-gold/15"
         animate={reduceMotion ? undefined : { x: [0, -50, 0], y: [0, -30, 0] }}
         transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
       />
@@ -49,8 +49,8 @@ export function HeroBackground() {
         transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      <div className="absolute top-1/2 right-[-14rem] hidden size-[44rem] -translate-y-1/2 rounded-full border border-gold/25 lg:block" />
-      <div className="absolute top-1/2 right-[-8rem] hidden size-[32rem] -translate-y-1/2 rounded-full border border-gold/15 lg:block" />
+      <div className="absolute top-1/2 -right-56 hidden size-176 -translate-y-1/2 rounded-full border border-gold/25 lg:block" />
+      <div className="absolute top-1/2 -right-32 hidden size-128 -translate-y-1/2 rounded-full border border-gold/15 lg:block" />
       <div className="absolute -bottom-24 -left-24 size-80 rounded-full border border-gold/20" />
 
       {sparkles.map((sparkle) => (

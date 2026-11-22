@@ -7,21 +7,13 @@ import {
   FaYoutube,
 } from "react-icons/fa6";
 import { Logo } from "@/components/shared/logo";
+import { SERVICE_CATEGORIES as categories } from "@/lib/services";
 
 const exploreLinks = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Browse services" },
   { href: "/sign-in", label: "Sign in" },
   { href: "/sign-up?role=vendor", label: "Become a vendor" },
-];
-
-const categories = [
-  "Photography & Videography",
-  "Wedding Venues",
-  "Decoration & Florist",
-  "Catering Services",
-  "Makeup & Styling",
-  "Wedding Fashion",
 ];
 
 const contactItems = [

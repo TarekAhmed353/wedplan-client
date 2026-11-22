@@ -39,7 +39,7 @@ export function ChooseRoleForm() {
       toast.error(result?.message || "Could not save your role. Please try again.");
 
       if (response?.status === 409) {
-        router.push("/");
+        router.push("/dashboard");
         router.refresh();
       }
       return;
@@ -50,7 +50,7 @@ export function ChooseRoleForm() {
         ? "You are all set as a vendor."
         : "You are all set as a customer.",
     );
-    router.push("/");
+    router.push("/dashboard");
     router.refresh();
   }
 

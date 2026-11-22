@@ -5,7 +5,7 @@ type AuthCardProps = {
   eyebrow: string;
   title: string;
   description: string;
-  withGoogle?: boolean;
+  googleRedirectTo?: string;
   children: React.ReactNode;
 };
 
@@ -13,7 +13,7 @@ export function AuthCard({
   eyebrow,
   title,
   description,
-  withGoogle = false,
+  googleRedirectTo,
   children,
 }: AuthCardProps) {
   return (
@@ -27,9 +27,9 @@ export function AuthCard({
           <p className="text-sm text-muted-foreground">{description}</p>
         </div>
         <div className="flex flex-col gap-6">
-          {withGoogle && (
+          {googleRedirectTo && (
             <>
-              <GoogleButton />
+              <GoogleButton redirectTo={googleRedirectTo} />
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 or use your email
               </FieldSeparator>

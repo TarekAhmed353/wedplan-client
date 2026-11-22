@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AuthCard } from "@/components/auth/auth-card";
 import { SignUpForm } from "@/components/auth/sign-up-form";
+import { getSafeRedirect } from "@/lib/safe-redirect";
 import { getSession } from "@/lib/session";
 
 export const metadata: Metadata = {
@@ -11,13 +12,14 @@ export const metadata: Metadata = {
 export default async function SignUpPage({
   searchParams,
 }: PageProps<"/sign-up">) {
+  const { role, redirect: redirectParam } = await searchParams;
+  const redirectTo = getSafeRedirect(redirectParam);
   const session = await getSession();
 
   if (session) {
-    redirect("/");
+    redirect(redirectTo);
   }
 
-  const { role } = await searchParams;
   const defaultRole = role === "vendor" || role === "customer" ? role : "";
 
   return (
@@ -25,9 +27,9 @@ export default async function SignUpPage({
       eyebrow="Join WedPlan"
       title="Create your account"
       description="Book trusted wedding vendors, or list your own services."
-      withGoogle
+      googleRedirectTo={redirectTo}
     >
-      <SignUpForm defaultRole={defaultRole} />
+      <SignUpForm defaultRole={defaultRole} redirectTo={redirectTo} />
     </AuthCard>
   );
 }

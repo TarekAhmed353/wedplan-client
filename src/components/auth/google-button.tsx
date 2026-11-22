@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
-export function GoogleButton() {
+export function GoogleButton({ redirectTo }: { redirectTo: string }) {
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleClick() {
@@ -15,7 +15,7 @@ export function GoogleButton() {
 
     const { error } = await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/",
+      callbackURL: redirectTo,
       newUserCallbackURL: "/choose-role",
       errorCallbackURL: "/sign-in",
     });

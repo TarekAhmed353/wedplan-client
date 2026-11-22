@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { allowedImageTypes, getImageError } from "@/lib/image-rules";
 import { getPasswordError, passwordRules } from "@/lib/password-rules";
+import { withRedirect } from "@/lib/safe-redirect";
 import { uploadImage } from "@/lib/upload-image";
 import { cn } from "@/lib/utils";
 import { isValidEmail } from "@/lib/validators";
@@ -65,7 +66,12 @@ function validate(values: FormValues) {
 
 const inputClass = "h-11 rounded-xl px-3.5";
 
-export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
+type SignUpFormProps = {
+  defaultRole: SignUpRole | "";
+  redirectTo: string;
+};
+
+export function SignUpForm({ defaultRole, redirectTo }: SignUpFormProps) {
   const router = useRouter();
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<"idle" | "creating" | "uploading">(
@@ -123,7 +129,7 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
   }
 
   function finishSignUp() {
-    router.push("/");
+    router.push(redirectTo);
     router.refresh();
   }
 
@@ -339,7 +345,7 @@ export function SignUpForm({ defaultRole }: { defaultRole: SignUpRole | "" }) {
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link
-            href="/sign-in"
+            href={withRedirect("/sign-in", redirectTo)}
             className="font-medium text-primary underline-offset-4 hover:underline"
           >
             Sign in

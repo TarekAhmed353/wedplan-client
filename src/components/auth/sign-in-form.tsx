@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { withRedirect } from "@/lib/safe-redirect";
 import { isValidEmail } from "@/lib/validators";
 
 type FormValues = {
@@ -40,7 +41,7 @@ function validate(values: FormValues) {
 
 const inputClass = "h-11 rounded-xl px-3.5";
 
-export function SignInForm() {
+export function SignInForm({ redirectTo }: { redirectTo: string }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [values, setValues] = useState<FormValues>({ email: "", password: "" });
@@ -76,7 +77,7 @@ export function SignInForm() {
     }
 
     toast.success(`Welcome back, ${data.user.name.split(" ")[0]}.`);
-    router.push("/");
+    router.push(redirectTo);
     router.refresh();
   }
 
@@ -124,7 +125,7 @@ export function SignInForm() {
         <p className="text-center text-sm text-muted-foreground">
           New to WedPlan?{" "}
           <Link
-            href="/sign-up"
+            href={withRedirect("/sign-up", redirectTo)}
             className="font-medium text-primary underline-offset-4 hover:underline"
           >
             Create an account

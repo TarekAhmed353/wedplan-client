@@ -166,7 +166,7 @@ export function SignUpForm({ defaultRole, redirectTo }: SignUpFormProps) {
       setStatus("uploading");
 
       try {
-        const image = await uploadImage(photo);
+        const image = await uploadImage(photo, "profile");
         const { error: updateError } = await authClient.updateUser({ image });
 
         if (updateError) {

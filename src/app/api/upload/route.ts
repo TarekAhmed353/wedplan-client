@@ -28,7 +28,25 @@ export async function POST(request: Request) {
   }
 
   const formData = await request.formData().catch(() => null);
+  const purpose = formData?.get("purpose");
   const file = formData?.get("image");
+
+  if (purpose !== "profile" && purpose !== "service") {
+    return Response.json(
+      { message: "Upload purpose must be profile or service." },
+      { status: 400 },
+    );
+  }
+
+  if (
+    purpose === "service" &&
+    (session.user.role !== "vendor" || session.user.roleChosen === false)
+  ) {
+    return Response.json(
+      { message: "Only vendors can upload service photos." },
+      { status: 403 },
+    );
+  }
 
   if (!(file instanceof File)) {
     return Response.json(

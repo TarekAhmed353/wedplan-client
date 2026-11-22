@@ -1,6 +1,9 @@
-export async function uploadImage(file: File) {
+export type UploadPurpose = "profile" | "service";
+
+export async function uploadImage(file: File, purpose: UploadPurpose) {
   const formData = new FormData();
   formData.append("image", file);
+  formData.append("purpose", purpose);
 
   const response = await fetch("/api/upload", {
     method: "POST",

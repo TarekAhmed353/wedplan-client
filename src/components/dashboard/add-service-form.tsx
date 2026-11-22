@@ -125,7 +125,9 @@ export function AddServiceForm() {
     let imageUrls: string[];
 
     try {
-      imageUrls = await Promise.all(images.map((image) => uploadImage(image.file)));
+      imageUrls = await Promise.all(
+        images.map((image) => uploadImage(image.file, "service")),
+      );
     } catch (error) {
       setStatus("idle");
       toast.error(

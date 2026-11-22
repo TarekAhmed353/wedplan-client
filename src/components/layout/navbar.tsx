@@ -6,6 +6,7 @@ import { useState } from "react";
 import { MenuIcon } from "lucide-react";
 import { Logo } from "@/components/shared/logo";
 import { UserMenu, type NavUser } from "@/components/layout/user-menu";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -62,6 +63,7 @@ export function Navbar({ user }: NavbarProps) {
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           {user ? (
             <UserMenu user={user} />
           ) : (

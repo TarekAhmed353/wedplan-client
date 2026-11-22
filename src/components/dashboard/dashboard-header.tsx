@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { UserMenu, type NavUser } from "@/components/layout/user-menu";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { type DashboardRole, dashboardNav, getActiveHref } from "@/lib/dashboard";
@@ -22,7 +23,8 @@ export function DashboardHeader({ role, user }: DashboardHeaderProps) {
       <SidebarTrigger className="-ml-1 size-9 rounded-full" />
       <Separator orientation="vertical" className="h-5!" />
       <p className="truncate text-sm font-medium text-muted-foreground">{title}</p>
-      <div className="ml-auto">
+      <div className="ml-auto flex items-center gap-1">
+        <ThemeToggle />
         <UserMenu user={user} />
       </div>
     </header>

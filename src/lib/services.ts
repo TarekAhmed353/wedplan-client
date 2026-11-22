@@ -30,6 +30,27 @@ export type Service = {
   updatedAt: string;
 };
 
+export const SERVICE_STATUSES: ServiceStatus[] = ["pending", "approved", "rejected"];
+
+export type ServiceVendor = {
+  _id: string;
+  name: string;
+  email: string;
+  businessName?: string | null;
+  image?: string | null;
+};
+
+export type AdminService = Service & { vendor?: ServiceVendor };
+
+export type AdminServiceList = {
+  services: AdminService[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  counts: Record<"all" | ServiceStatus, number>;
+};
+
 export type PlanSummary = {
   plan: "free" | "premium";
   activeServices: number;

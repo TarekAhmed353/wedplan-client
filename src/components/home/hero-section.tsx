@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRightIcon, BadgeCheckIcon, BanknoteIcon, SearchIcon } from "lucide-react";
+import { HeroBackground } from "@/components/home/hero-background";
 import { HeroSlideshow } from "@/components/home/hero-slideshow";
 import { Reveal } from "@/components/home/reveal";
 import { Button } from "@/components/ui/button";
@@ -13,8 +14,7 @@ const highlights = [
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-linear-to-br from-accent via-background to-secondary">
-      <div className="pointer-events-none absolute -top-32 -left-32 size-96 rounded-full bg-primary/5 blur-3xl" />
-      <div className="pointer-events-none absolute -right-24 -bottom-40 size-[28rem] rounded-full bg-gold/10 blur-3xl" />
+      <HeroBackground />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-2 lg:px-8">
         <Reveal className="space-y-7">

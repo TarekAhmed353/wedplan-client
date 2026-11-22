@@ -13,6 +13,23 @@ export const MAX_SERVICE_IMAGES = 5;
 
 export const MAX_SERVICE_PRICE = 10_000_000;
 
+export type ServiceStatus = "pending" | "approved" | "rejected";
+
+export type Service = {
+  _id: string;
+  vendorId: string;
+  serviceName: string;
+  category: ServiceCategory;
+  description: string;
+  price: number;
+  location: string;
+  images: string[];
+  status: ServiceStatus;
+  isAvailable: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type PlanSummary = {
   plan: "free" | "premium";
   activeServices: number;

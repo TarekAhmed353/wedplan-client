@@ -22,7 +22,7 @@ function visibilityNote(service: Service) {
 export function VendorServiceCard({ service }: { service: Service }) {
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl bg-card shadow-sm ring-1 ring-foreground/5">
-      <div className="relative aspect-[4/3] bg-muted">
+      <div className="relative aspect-4/3 bg-muted">
         <Image
           src={service.images[0]}
           alt={service.serviceName}

@@ -129,7 +129,7 @@ export function HeroSlideshow() {
                 aria-current={dot === index}
                 className={cn(
                   "h-2 rounded-full transition-all duration-300",
-                  dot === index ? "w-6 bg-gold" : "w-2 bg-card/70 hover:bg-card",
+                  dot === index ? "w-6 bg-gold" : "w-2 bg-white/60 shadow-sm hover:bg-white/90",
                 )}
               />
             ))}

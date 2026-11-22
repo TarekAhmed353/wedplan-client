@@ -131,8 +131,11 @@ export function Footer() {
           <p className="text-sm text-muted-foreground">
             &copy; {year} WedPlan. All rights reserved.
           </p>
-          <p className="text-sm text-muted-foreground">
-            Made for couples planning their big day.
+          <p className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+            <Link href="/privacy" className={linkClass}>
+              Privacy policy
+            </Link>
+            <span>Made for couples planning their big day.</span>
           </p>
         </div>
       </div>

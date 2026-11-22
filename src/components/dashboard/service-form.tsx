@@ -28,17 +28,16 @@ import { allowedImageTypes, getImageError } from "@/lib/image-rules";
 import {
   MAX_SERVICE_IMAGES,
   SERVICE_CATEGORIES,
+  type Service,
   type ServiceInput,
   type ServiceInputErrors,
   validateServiceInput,
 } from "@/lib/services";
 import { uploadImage } from "@/lib/upload-image";
 
-type PickedImage = {
-  id: string;
-  file: File;
-  preview: string;
-};
+type FormImage =
+  | { id: string; kind: "existing"; url: string }
+  | { id: string; kind: "new"; file: File; preview: string };
 
 const inputClass = "h-11 rounded-xl px-3.5";
 
@@ -51,17 +50,24 @@ function readPreview(file: File) {
   });
 }
 
-export function AddServiceForm() {
+export function ServiceForm({ service }: { service?: Service }) {
   const router = useRouter();
+  const isEdit = Boolean(service);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [values, setValues] = useState<ServiceInput>({
-    serviceName: "",
-    category: "",
-    description: "",
-    price: "",
-    location: "",
+    serviceName: service?.serviceName ?? "",
+    category: service?.category ?? "",
+    description: service?.description ?? "",
+    price: service ? String(service.price) : "",
+    location: service?.location ?? "",
   });
-  const [images, setImages] = useState<PickedImage[]>([]);
+  const [images, setImages] = useState<FormImage[]>(
+    service?.images.map((url, index) => ({
+      id: `existing-${index}`,
+      kind: "existing",
+      url,
+    })) ?? [],
+  );
   const [errors, setErrors] = useState<ServiceInputErrors>({});
   const [status, setStatus] = useState<"idle" | "uploading" | "saving">("idle");
 
@@ -96,6 +102,7 @@ export function AddServiceForm() {
     const picked = await Promise.all(
       files.slice(0, room).map(async (file) => ({
         id: crypto.randomUUID(),
+        kind: "new" as const,
         file,
         preview: await readPreview(file),
       })),
@@ -126,7 +133,11 @@ export function AddServiceForm() {
 
     try {
       imageUrls = await Promise.all(
-        images.map((image) => uploadImage(image.file, "service")),
+        images.map((image) =>
+          image.kind === "existing"
+            ? Promise.resolve(image.url)
+            : uploadImage(image.file, "service"),
+        ),
       );
     } catch (error) {
       setStatus("idle");
@@ -138,17 +149,19 @@ export function AddServiceForm() {
 
     setStatus("saving");
 
+    const body = {
+      serviceName: values.serviceName.trim(),
+      category: values.category,
+      description: values.description.trim(),
+      price: Number(values.price),
+      location: values.location.trim(),
+      images: imageUrls,
+    };
+
     try {
-      await apiFetch("/api/services", {
-        method: "POST",
-        json: {
-          serviceName: values.serviceName.trim(),
-          category: values.category,
-          description: values.description.trim(),
-          price: Number(values.price),
-          location: values.location.trim(),
-          images: imageUrls,
-        },
+      await apiFetch(service ? `/api/services/${service._id}` : "/api/services", {
+        method: service ? "PATCH" : "POST",
+        json: body,
       });
     } catch (error) {
       setStatus("idle");
@@ -168,7 +181,11 @@ export function AddServiceForm() {
       return;
     }
 
-    toast.success("Service submitted. It will go live once an admin approves it.");
+    toast.success(
+      isEdit
+        ? "Changes saved. The service is waiting for admin review again."
+        : "Service submitted. It will go live once an admin approves it.",
+    );
     router.push("/dashboard/vendor/services");
     router.refresh();
   }
@@ -285,7 +302,7 @@ export function AddServiceForm() {
                 className="group relative aspect-square overflow-hidden rounded-xl bg-muted ring-1 ring-foreground/10"
               >
                 <Image
-                  src={image.preview}
+                  src={image.kind === "existing" ? image.url : image.preview}
                   alt={`Photo ${index + 1}`}
                   fill
                   unoptimized
@@ -351,7 +368,7 @@ export function AddServiceForm() {
             {isSubmitting && <Loader2Icon className="animate-spin" />}
             {status === "uploading" && "Uploading photos..."}
             {status === "saving" && "Saving service..."}
-            {status === "idle" && "Submit for review"}
+            {status === "idle" && (isEdit ? "Save and resubmit" : "Submit for review")}
           </Button>
         </div>
       </FieldGroup>

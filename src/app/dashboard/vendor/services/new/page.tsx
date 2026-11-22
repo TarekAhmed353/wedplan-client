@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CrownIcon, InfoIcon } from "lucide-react";
-import { AddServiceForm } from "@/components/dashboard/add-service-form";
+import { ServiceForm } from "@/components/dashboard/service-form";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { Button } from "@/components/ui/button";
 import { ApiError } from "@/lib/api-error";
@@ -78,7 +78,7 @@ export default async function AddServicePage() {
               </p>
             )}
           </div>
-          <AddServiceForm />
+          <ServiceForm />
         </>
       )}
     </>

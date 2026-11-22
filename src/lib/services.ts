@@ -63,6 +63,10 @@ export type PublicService = Omit<Service, "description" | "vendorId"> & {
   vendor: PublicVendor;
 };
 
+export type ServiceDetail = Omit<Service, "vendorId"> & {
+  vendor: PublicVendor;
+};
+
 export const SERVICE_SORTS = [
   { value: "newest", label: "Newest first" },
   { value: "price-asc", label: "Price: low to high" },

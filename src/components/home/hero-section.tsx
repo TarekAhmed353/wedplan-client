@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRightIcon, BadgeCheckIcon, BanknoteIcon, SearchIcon } from "lucide-react";
-import { HeroIllustration } from "@/components/home/hero-illustration";
+import { HeroSlideshow } from "@/components/home/hero-slideshow";
 import { Reveal } from "@/components/home/reveal";
 import { Button } from "@/components/ui/button";
 
@@ -60,8 +60,8 @@ export function HeroSection() {
           </ul>
         </Reveal>
 
-        <Reveal delay={0.15} className="mx-auto w-full max-w-md lg:max-w-lg">
-          <HeroIllustration />
+        <Reveal delay={0.15} className="mx-auto w-full max-w-sm sm:max-w-md lg:max-w-[26rem]">
+          <HeroSlideshow />
         </Reveal>
       </div>
     </section>
